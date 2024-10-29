@@ -1,0 +1,66 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BlogAmigos</title>
+    <link rel="stylesheet" href="{% static 'css/navbar.css' %}" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="navbar text-black">
+      <div class="brand">Blog<span>Amigos</span></div>
+
+      {% if user.is_authenticated %}
+      <div class="nav-links">
+        <a href="/">Inicio</a>
+        <a href="{% url 'blogs:featured' %}">Destacados</a>
+
+        <!-- Menú desplegable de Categorías -->
+        <div class="dropdown">
+          <a href="#">Categorías</a>
+          <ul class="dropdown-content">
+            <!-- Aquí se genera dinámicamente la lista de categorías -->
+            {% for category in categories %}
+            <li>
+              <a href="{% url 'blogs:category' category.slug %}"
+                >{{ category.title }}</a
+              >
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+      {% endif %} {% if user.is_authenticated %}
+      <!-- Barra de búsqueda -->
+      <form class="search-bar" action="{% url 'blogs:search' %}">
+        <input name="search" type="text" placeholder="Buscar" />
+        <input type="submit" value="Buscar" />
+      </form>
+      {% endif %}
+
+      <!-- Botones de autenticación y perfil del usuario -->
+      <div class="auth-buttons">
+        {% if user.is_authenticated %}
+        <span class="user-greeting text-black">Hola, {{ user.username }}!</span>
+        <a href="{% url 'users:user_profile' %}">Perfil</a>
+        <a href="{% url 'users:user_posts' %}">Mis Publicaciones</a>
+        <a href="{% url 'users:create_post' %}">Crear Publicación</a>
+        <a href="{% url 'users:logout' %}">Cerrar sesión</a>
+
+        {% if user.is_superuser %}
+        <a href="{% url 'blogs:other_posts' %}" class="hover:text-yellow-300"
+          >Otros Posts</a
+        >
+        {% endif %} {% else %}
+        <a href="{% url 'users:registration' %}">Registrarse</a>
+        <a href="{% url 'users:login' %}">Iniciar sesión</a>
+        {% endif %}
+      </div>
+    </div>
+  </body>
+</html>

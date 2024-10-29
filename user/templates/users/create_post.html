@@ -1,0 +1,178 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Crear Publicación</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      .modal {
+        transition: opacity 0.25s ease;
+      }
+      body.modal-active {
+        overflow-x: hidden;
+        overflow-y: visible !important;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-100">
+    {% include "blogs/navbar.html" %}
+
+    <div class="container mx-auto mt-10 max-w-3xl">
+      <h1 class="text-3xl font-bold text-center mb-6">Crear Publicación</h1>
+
+      <form
+        method="post"
+        enctype="multipart/form-data"
+        class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"
+      >
+        {% csrf_token %} {{ form.non_field_errors }}
+
+        <div class="mb-4">
+          <label
+            class="block text-gray-700 text-sm font-bold mb-2"
+            for="categorias"
+            >Categorías</label
+          >
+          {{ form.categorias }} {{ form.categorias.errors }}
+
+          <!-- Botón para abrir el modal (solo visible para superusuarios) -->
+          {% if user.is_superuser %}
+          <button
+            type="button"
+            id="open-modal-btn"
+            class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mt-2"
+          >
+            Crear nueva categoría
+          </button>
+          {% endif %}
+        </div>
+
+        <!-- Campos del formulario restantes -->
+        <div class="mb-4">
+          <label class="block text-gray-700 text-sm font-bold mb-2" for="title"
+            >Título</label
+          >
+          {{ form.title }} {{ form.title.errors }}
+        </div>
+
+        <div class="mb-4">
+          <label class="block text-gray-700 text-sm font-bold mb-2" for="slug"
+            >Slug</label
+          >
+          {{ form.slug }} {{ form.slug.errors }}
+        </div>
+
+        <div class="mb-4">
+          <label
+            class="block text-gray-700 text-sm font-bold mb-2"
+            for="overview"
+            >Descripción</label
+          >
+          {{ form.overview }} {{ form.overview.errors }}
+        </div>
+
+        <div class="mb-4">
+          <label
+            class="block text-gray-700 text-sm font-bold mb-2"
+            for="content"
+            >Contenido</label
+          >
+          {{ form.content }} {{ form.content.errors }}
+        </div>
+
+        <div class="mb-6">
+          <label class="block text-gray-700 text-sm font-bold mb-2" for="image"
+            >Imagen</label
+          >
+          {{ form.image }} {{ form.image.errors }}
+        </div>
+
+        <div class="flex items-center justify-between">
+          <button
+            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            type="submit"
+          >
+            Guardar
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Modal para crear nueva categoría -->
+    <div id="modal" class="fixed z-50 inset-0 overflow-y-auto hidden">
+      <div class="flex items-center justify-center min-h-screen">
+        <div class="fixed inset-0 bg-black opacity-50"></div>
+
+        <div
+          class="bg-white rounded-lg overflow-hidden shadow-xl transform transition-all sm:max-w-lg sm:w-full p-6"
+        >
+          <div class="mb-4">
+            <h2 class="text-xl font-bold">Crear Nueva Categoría</h2>
+          </div>
+
+          <form method="post" action="{% url 'blogs:create_category' %}">
+            {% csrf_token %}
+            <div class="mb-4">
+              <label
+                class="block text-gray-700 text-sm font-bold mb-2"
+                for="category-title"
+                >Título de la Categoría</label
+              >
+              <input
+                type="text"
+                name="title"
+                id="category-title"
+                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                placeholder="Ingresa el nombre de la categoría"
+              />
+            </div>
+            <div class="flex justify-between">
+              <button
+                type="submit"
+                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              >
+                Guardar
+              </button>
+              <button
+                type="button"
+                id="close-modal-btn"
+                class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              >
+                Cancelar
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- JavaScript para abrir y cerrar el modal -->
+    <script>
+      const openModalBtn = document.getElementById('open-modal-btn')
+      const closeModalBtn = document.getElementById('close-modal-btn')
+      const modal = document.getElementById('modal')
+
+      openModalBtn.addEventListener('click', () => {
+        modal.classList.remove('hidden')
+        document.body.classList.add('modal-active')
+      })
+
+      closeModalBtn.addEventListener('click', () => {
+        modal.classList.add('hidden')
+        document.body.classList.remove('modal-active')
+      })
+
+      window.addEventListener('click', (event) => {
+        if (event.target === modal) {
+          modal.classList.add('hidden')
+          document.body.classList.remove('modal-active')
+        }
+      })
+    </script>
+  </body>
+</html>

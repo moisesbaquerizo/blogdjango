@@ -1,0 +1,198 @@
+{% extends 'blogs/base.html' %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Página</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Estilos generales */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .featured {
+            margin-bottom: 40px;
+        }
+
+        /* Estilos para la sección de contenido */
+        .content {
+            display: flex;
+            gap: 20px;
+        }
+
+        .main-content {
+            flex: 2;
+        }
+
+        .sidebar {
+            flex: 1;
+            position: sticky;
+            top: 20px;
+        }
+
+        /* Estilos para las secciones */
+        .section-title {
+            font-size: 1.5rem;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        /* Estilos personalizados para la card */
+        .card {
+            background-color: #ffffff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .card img {
+            width: 100%;
+            height: auto;
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        .card-text {
+            font-size: 1rem;
+            margin-bottom: 10px;
+            color: #555;
+        }
+
+        .card-text small {
+            color: #999;
+            font-size: 0.875rem;
+        }
+
+        /* Estilos para la barra lateral */
+        .about-box, .extra-box {
+            background-color: #ffffff;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h4 {
+            font-size: 1.25rem;
+            margin-bottom: 10px;
+        }
+
+        /* Estilos para la paginación */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 20px 0;
+        }
+
+        .pagination a {
+            text-decoration: none;
+            padding: 10px 20px;
+            margin: 0 5px;
+            border: 1px solid #ddd;
+            background-color: #fff;
+            color: #007bff;
+            border-radius: 5px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .pagination a.disabled {
+            color: #ccc;
+            cursor: not-allowed;
+            border-color: #eee;
+        }
+
+        .pagination a:hover:not(.disabled) {
+            background-color: #007bff;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+
+<main class="container">
+    <!-- Sección de contenido destacado -->
+    <div class="featured">
+        <!-- Incluir featured.html -->
+        {% include "blogs/featured.html" %}
+    </div>
+
+    <div class="content">
+        <!-- Sección de artículos adicionales -->
+        <div class="main-content">
+            <h3 class="section-title">Posts en la categoría: {{ category }}</h3>
+
+            {% for post in object_list %}
+                <div class="card">
+                    {% if post.image %}
+                        <img src="{{ post.image.url }}" alt="thumbnail">
+                    {% endif %}
+                    <div class="card-body">
+                        <a href="{{ post.get_absolute_url }}" class="card-title">{{ post.title }}</a>
+                        <p class="card-text">{{ post.overview }}</p>
+                        <p class="card-text"></h5><small>Última actualización: {{ post.pub_date.date }}</small></p>
+                    </div>
+                </div>
+            {% empty %}
+                <p>No hay posts en esta categoría.</p>
+            {% endfor %}
+
+            <!-- Paginación -->
+            <nav class="pagination" aria-label="Pagination">
+                {% if page_obj.has_previous %}
+                    <a href="?page={{ page_obj.previous_page_number }}{% if query %}&search={{ query }}{% endif %}">
+                        Antes
+                    </a>
+                {% else %}
+                    <a class="disabled">Antes</a>
+                {% endif %}
+
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}{% if query %}&search={{ query }}{% endif %}">
+                        Siguiente
+                    </a>
+                {% else %}
+                    <a class="disabled">Siguiente</a>
+                {% endif %}
+            </nav>
+        </div>
+
+        <aside class="sidebar">
+            <div class="about-box">
+                <h4>Sobre</h4>
+                <p>Información adicional sobre lo que se encuentra dentro de esta página.</p>
+            </div>
+
+            <div class="extra-box">
+                <h4>Más Cosas?</h4>
+            </div>
+        </aside>
+    </div>
+</main>
+
+</body>
+</html>
+{% endblock content %}

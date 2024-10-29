@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Página</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Estilos generales */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .featured {
+            margin-bottom: 40px;
+        }
+
+        /* Estilos para la sección de contenido */
+        .content {
+            display: flex;
+            gap: 20px;
+        }
+
+        .main-content {
+            flex: 2;
+        }
+
+        .sidebar {
+            flex: 1;
+            position: sticky;
+            top: 20px;
+        }
+
+        /* Estilos para las secciones */
+        .section-title {
+            font-size: 1.5rem;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .blog-post {
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .blog-post-title {
+            font-size: 1.75rem;
+            margin-bottom: 10px;
+        }
+
+        .blog-post-meta {
+            color: #6c757d;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+
+        .post-link {
+            text-decoration: none;
+            color: #000;
+        }
+
+        .post-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Estilos para la barra lateral */
+        .about-box, .extra-box {
+            background-color: #ffffff;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h4 {
+            font-size: 1.25rem;
+            margin-bottom: 10px;
+        }
+
+        /* Estilos para los iconos de redes sociales */
+        .social-icons {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+            align-items: center;
+        }
+
+        .social-icons img {
+            width: 30px;
+            height: 30px;
+            border-radius: 5px;
+            transition: transform 0.3s ease;
+        }
+
+        .social-icons img:hover {
+            transform: scale(1.1);
+        }
+
+        .social-icons a {
+            color: #333;
+            font-size: 1rem;
+            text-decoration: none;
+        }
+
+        .social-icons a:hover {
+            color: #007bff;
+        }
+    </style>
+</head>
+<body>
+
+{% extends 'blogs/base.html' %}
+{% block content %}
+
+<main class="container">
+    <!-- Sección de contenido destacado -->
+    <div class="featured">
+        <!-- Incluir featured.html -->
+        {% include "blogs/featured.html" %}
+    </div>
+
+    <div class="content">
+        <!-- Sección de artículos adicionales -->
+        <div class="main-content">
+            <h3 class="section-title">Más Artículos</h3>
+            {% for post in post_list %}
+                <!-- Incluir posts.html -->
+                <div class="blog-post">
+                    <h2 class="blog-post-title">
+                        <a href="{{ post.get_absolute_url }}" class="post-link">{{ post.title }}</a>
+                    </h2>
+                    <p class="blog-post-meta">{{ post.pub_date.date }}. {{ post.author }}</p>
+                    <p>{{ post.overview }}</p>
+                </div>
+            {% endfor %}
+        </div>
+        <aside class="sidebar">
+            <div class="about-box">
+                <h4>Sobre</h4>
+                <p>Bienvenido a nuestro blog. Aquí compartimos información útil y artículos interesantes en diversas categorías para enriquecer tus conocimientos. Nos dedicamos a ofrecer contenido de calidad que pueda ayudarte en tu vida diaria y profesional.</p>
+            </div>
+
+            <div class="extra-box">
+                <h4>Más Cosas</h4>
+                <p>Conéctate con nosotros en nuestras redes sociales para estar al tanto de todas nuestras actualizaciones.</p>
+                <div class="social-icons">
+                    <a href="https://www.facebook.com" target="_blank">
+                        <img src="https://th.bing.com/th/id/OIP.sh7O-6EN0tlS0e0mXZ_nRAHaHa?rs=1&pid=ImgDetMain" alt="Facebook">
+                        Facebook
+                    </a>
+                    <a href="https://www.twitter.com" target="_blank">
+                        <img src="https://th.bing.com/th/id/R.4b930f1364ebaf8cf848de523b112bcb?rik=t2fE14qIa2n91w&pid=ImgRaw&r=0" alt="Twitter">
+                        Twitter
+                    </a>
+                    <a href="https://www.instagram.com" target="_blank">
+                        <img src="https://th.bing.com/th/id/R.407deb2916103dc337c719a3b9b62668?rik=9lJtPZYDyOemHw&pid=ImgRaw&r=0" alt="Instagram">
+                        Instagram
+                    </a>
+                </div>
+            </div>
+        </aside>
+    </div>
+</main>
+{% endblock content %}
+</body>
+</html>

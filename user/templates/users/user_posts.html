@@ -1,0 +1,218 @@
+<!-- users/templates/users/user_posts.html -->
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mis Publicaciones</title>
+    <style>
+      /* Estilos globales */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: Arial, sans-serif;
+      }
+
+      body {
+        background-color: #f0f0f0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-height: 100vh;
+        padding: 20px;
+      }
+
+      .navbar {
+        width: 100%;
+        background-color: #28a745;
+        padding: 15px 0;
+        text-align: center;
+        color: white;
+        margin-bottom: 20px;
+      }
+
+      h1 {
+        font-size: 28px;
+        margin-bottom: 10px;
+        color: #333;
+        text-align: center;
+      }
+
+      .post-count {
+        font-size: 18px;
+        color: #555;
+        margin-bottom: 20px;
+        text-align: center;
+      }
+
+      .posts-container {
+        width: 100%;
+        max-width: 1000px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        justify-content: center;
+      }
+
+      .post-card {
+        background-color: #fff;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        width: calc(33.333% - 20px);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        transition: transform 0.2s, box-shadow 0.2s;
+      }
+
+      .post-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      }
+
+      .post-image {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+      }
+
+      .post-content {
+        padding: 15px;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .post-title {
+        font-size: 20px;
+        margin-bottom: 10px;
+        color: #28a745;
+        text-decoration: none;
+      }
+
+      .post-title:hover {
+        text-decoration: underline;
+      }
+
+      .post-description {
+        font-size: 16px;
+        margin-bottom: 10px;
+        color: #555;
+      }
+
+      .post-excerpt {
+        font-size: 14px;
+        color: #777;
+        flex-grow: 1;
+      }
+
+      .post-date {
+        font-size: 12px;
+        color: #999;
+        margin-top: 10px;
+        text-align: right;
+      }
+
+      .action-buttons {
+        margin-top: 10px;
+        display: flex;
+        justify-content: space-between;
+      }
+
+      .edit-button,
+      .delete-button {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        padding: 8px 12px;
+        text-decoration: none;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+
+      .delete-button {
+        background-color: #dc3545;
+      }
+
+      .edit-button:hover,
+      .delete-button:hover {
+        opacity: 0.9;
+      }
+
+      .no-posts {
+        color: #999;
+        font-style: italic;
+        text-align: center;
+        width: 100%;
+        font-size: 18px;
+        padding: 20px;
+        background-color: #fff;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      /* Responsivo */
+      @media (max-width: 900px) {
+        .post-card {
+          width: calc(50% - 20px);
+        }
+      }
+
+      @media (max-width: 600px) {
+        .post-card {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    {% include "blogs/navbar.html" %}
+    <h1>Mis Publicaciones</h1>
+    <p class="post-count">
+      Has realizado {{ posts|length }} publicación{{ posts|length|pluralize }}
+    </p>
+    <div class="posts-container">
+      {% for post in posts %}
+      <div class="post-card">
+        {% if post.image %}
+        <img
+          src="{{ post.image.url }}"
+          alt="{{ post.title }}"
+          class="post-image"
+        />
+        {% else %}
+        <img
+          src="https://via.placeholder.com/400x200?text=Sin+Imagen"
+          alt="Sin imagen"
+          class="post-image"
+        />
+        {% endif %}
+        <div class="post-content">
+          <a href="{{ post.get_absolute_url }}" class="post-title"
+            >{{ post.title }}</a
+          >
+          <p class="post-description">{{ post.description }}</p>
+          <p class="post-excerpt">{{ post.content|truncatewords:30 }}</p>
+          <p class="post-date">Publicado el: {{ post.pub_date.date }}</p>
+          <div class="action-buttons">
+            <a href="{% url 'blogs:edit_post' post.slug %}" class="edit-button"
+              >Editar</a
+            >
+            <a
+              href="{% url 'blogs:delete_post' post.slug %}"
+              class="delete-button"
+              >Eliminar</a
+            >
+          </div>
+        </div>
+      </div>
+      {% empty %}
+      <div class="no-posts">No tienes publicaciones.</div>
+      {% endfor %}
+    </div>
+  </body>
+</html>

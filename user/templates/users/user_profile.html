@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil de {{ user.username }}</title>
+    <style>
+        /* Estilos globales */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f0f0f0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .navbar {
+            width: 100%;
+            background-color: #28a745;
+            padding: 15px 0;
+            text-align: center;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .profile-container {
+            width: 100%;
+            max-width: 800px;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: left;
+        }
+
+        h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+            color: #333;
+            text-align: center;
+        }
+
+        .user-info {
+            margin-bottom: 20px;
+        }
+
+        .user-info p {
+            font-size: 18px;
+            margin-bottom: 5px;
+            color: #555;
+        }
+
+        h2 {
+            font-size: 24px;
+            margin: 20px 0 10px 0;
+            color: #28a745;
+        }
+
+        .posts-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .post-card {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            width: calc(50% - 10px);
+            padding: 20px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .post-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .post-card h3 {
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: #28a745;
+        }
+
+        .post-card a {
+            text-decoration: none;
+            color: #333;
+        }
+
+        .post-card a:hover {
+            text-decoration: underline;
+        }
+
+        .no-posts {
+            color: #999;
+            font-style: italic;
+            text-align: center;
+            width: 100%;
+        }
+
+        /* Responsivo */
+        @media (max-width: 600px) {
+            .post-card {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    {% include "blogs/navbar.html" %}
+    <div class="profile-container">
+        <h1>Perfil de {{ user.username }}</h1>
+        <div class="user-info">
+            <p><strong>Primer Nombre:</strong> {{ user.first_name }}</p>
+            <p><strong>Segundo Nombre:</strong> {{ user.last_name }}</p>
+            <p><strong>Email:</strong> {{ user.email }}</p>
+            <p><strong>Fecha de registro:</strong> {{ user.date_joined }}</p>
+        </div>
+
+        <h2>Tus publicaciones</h2>
+        <div class="posts-container">
+            {% for post in user.post_set.all %}
+                <div class="post-card">
+                    <h3><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h3>
+                    <p>{{ post.summary|truncatewords:20 }}</p>
+                </div>
+            {% empty %}
+                <p class="no-posts">No has realizado ninguna publicación aún.</p>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

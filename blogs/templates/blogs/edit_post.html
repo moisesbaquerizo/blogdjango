@@ -1,0 +1,16 @@
+{% include "blogs/navbar.html" %} {% block content %}
+<div class="max-w-lg mx-auto mt-10">
+  <h1 class="text-2xl font-bold mb-4">Editar Publicación</h1>
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %} {{ form.as_p }}
+    <div class="flex justify-end">
+      <button
+        type="submit"
+        class="bg-blue-500 text-white font-bold py-2 px-4 rounded"
+      >
+        Actualizar
+      </button>
+    </div>
+  </form>
+</div>
+{% endblock %}

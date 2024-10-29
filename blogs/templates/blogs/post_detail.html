@@ -1,0 +1,263 @@
+{% extends 'blogs/base.html' %}
+
+{% block content %}
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ post.title }}</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 20px auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 2em;
+            margin: 0;
+        }
+
+        .header .date {
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        hr {
+            margin: 10px 0;
+            border: none;
+            border-top: 1px solid #ddd;
+        }
+
+        .image-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .image-container img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .content {
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
+
+        .rating-form {
+            display: flex; /* Alinear estrellas horizontalmente */
+            align-items: center; /* Alinear verticalmente */
+            margin-bottom: 20px; /* Espacio inferior */
+        }
+
+        .rating-form input {
+            display: none; /* Ocultar radios */
+        }
+
+        .rating-form label {
+            font-size: 2em; /* Tamaño de las estrellas */
+            color: #ddd; /* Color por defecto */
+            cursor: pointer; /* Cambiar cursor al pasar el mouse */
+            margin-right: 5px; /* Espacio entre estrellas */
+        }
+
+        .rating-form input:checked ~ label {
+            color: #ffcc00; /* Color para la estrella seleccionada */
+        }
+
+        .rating-form label:hover,
+        .rating-form label:hover ~ label {
+            color: #ffcc00; /* Color al pasar el mouse */
+        }
+
+        .comment-section {
+            margin-top: 40px;
+        }
+
+        .comment-section h3 {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+
+        .comment {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            background-color: #f9f9f9;
+        }
+
+        .comment .author {
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .comment .post-date {
+            font-size: 0.9em;
+            color: #888;
+            margin-left: 10px;
+        }
+
+        .comment .content {
+            margin-top: 10px;
+            font-size: 1em;
+            line-height: 1.4;
+        }
+
+        .no-comments {
+            color: #777;
+            font-style: italic;
+        }
+
+        form {
+            margin-top: 20px;
+        }
+
+        label {
+            font-size: 1em;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            margin-bottom: 10px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+
+    <div class="container">
+        <div class="header">
+            <h1>{{ post.title }}</h1>
+            <div class="date">Publicado: {{ post.pub_date.date }}. {{ post.author }}</div>
+        </div>
+
+        <hr>
+
+        {% if post.image %}
+            <div class="image-container">
+                <img src="{{ post.image.url }}" alt="Imagen del post">
+            </div>
+        {% endif %}
+
+        <div class="content">
+            <p>{{ post.content }}</p>
+
+            <div class="rating">
+                <form method="post" action="{% url 'blogs:rate_post' post.slug %}" id="ratingForm" class="rating-form">
+                    {% csrf_token %}
+                    <input type="radio" id="star5" name="stars" value="5" {% if post.average_rating == 5 %}checked{% endif %} />
+                    <label for="star5" title="5 stars">★</label>
+                    <input type="radio" id="star4" name="stars" value="4" {% if post.average_rating == 4 %}checked{% endif %} />
+                    <label for="star4" title="4 stars">★</label>
+                    <input type="radio" id="star3" name="stars" value="3" {% if post.average_rating == 3 %}checked{% endif %} />
+                    <label for="star3" title="3 stars">★</label>
+                    <input type="radio" id="star2" name="stars" value="2" {% if post.average_rating == 2 %}checked{% endif %} />
+                    <label for="star2" title="2 stars">★</label>
+                    <input type="radio" id="star1" name="stars" value="1" {% if post.average_rating == 1 %}checked{% endif %} />
+                    <label for="star1" title="1 star">★</label>
+                </form>
+            </div>
+
+            <p class="average-rating">Valoración promedio: {{ post.average_rating|floatformat:1 }} estrellas</p>
+
+            <div class="comment-section">
+                <h3>Comentarios</h3>
+                <hr>
+
+                <form method="post" action="{% url 'blogs:post' post.slug %}#comments-section">
+                    {% csrf_token %}
+                    {{ form.as_p }}  <!-- Muestra el formulario de comentarios -->
+                    <button type="submit">Comentar</button>
+                </form>
+
+                <hr>
+
+                <div class="comment-section">
+                    <h3>Comentarios</h3>
+                    {% for comment in post.comments.all %}  <!-- Usa la relación comments aquí -->
+                        <div class="comment">
+                            <div class="author">{{ comment.author.username }}<span class="post-date"> - {{ comment.post_date }}</span></div>
+                            <div class="content">{{ comment.content }}</div>
+                        </div>
+                    {% empty %}
+                        <div class="no-comments">No hay comentarios aún.</div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Selecciona todas las etiquetas de las estrellas
+        const stars = document.querySelectorAll('.rating label');
+        const ratingForm = document.getElementById('ratingForm');
+
+        stars.forEach((star, index) => {
+            star.addEventListener('mouseover', () => {
+                stars.forEach((s, i) => {
+                    s.style.color = i <= index ? '#ffcc00' : '#ddd';
+                });
+            });
+
+            star.addEventListener('mouseout', () => {
+                stars.forEach((s, i) => {
+                    s.style.color = document.querySelector(`input[name="stars"]:checked`) && i < document.querySelector(`input[name="stars"]:checked`).value ? '#ffcc00' : '#ddd';
+                });
+            });
+
+            star.addEventListener('click', async () => {
+                const ratingValue = index + 1;
+                document.querySelector(`input[name="stars"][value="${ratingValue}"]`).checked = true; // Marca la estrella seleccionada
+
+                // Envía la valoración usando Fetch
+                const response = await fetch(ratingForm.action, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}', // Incluye el token CSRF
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: new URLSearchParams(new FormData(ratingForm)) // Envía los datos del formulario
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    // Aquí puedes actualizar la visualización del promedio de estrellas
+                    document.querySelector('.average-rating').textContent = `Valoración promedio: ${data.average_rating} estrellas`;
+                } else {
+                    console.error('Error al enviar la valoración');
+                }
+            });
+        });
+    </script>
+
+{% endblock %}
