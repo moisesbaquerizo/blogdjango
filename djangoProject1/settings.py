@@ -26,6 +26,8 @@ SECRET_KEY = 'django-insecure-#-=_2p7+8-3)1#g@jzy3z0td3zc@u2a=^p=(9=lbzl!uzn@y_&
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+PORT = os.getenv('PORT', '8000')
+
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'blogdjango-k7aw.onrender.com']
 
 
