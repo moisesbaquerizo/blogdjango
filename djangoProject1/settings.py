@@ -28,7 +28,7 @@ DEBUG = True
 
 PORT = os.getenv('PORT', '8000')
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'blogdjango-k7aw.onrender.com']
 
 
 # Application definition
